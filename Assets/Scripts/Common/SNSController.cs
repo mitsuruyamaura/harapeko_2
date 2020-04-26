@@ -29,6 +29,6 @@ public class SNSController : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
 
         // Shareする
-        SocialConnector.SocialConnector.Share(text,URL,imagePath);
+        SocialConnector.SocialConnector.Share(text, URL, imagePath);
     }
 }

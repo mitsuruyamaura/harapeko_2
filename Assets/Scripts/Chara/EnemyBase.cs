@@ -54,7 +54,8 @@ public class EnemyBase : MonoBehaviour {
         JUMP,
         DASH,
         MOVE,
-        ATTACK
+        ATTACK,
+        DOWN
     }
 
     public EnemyState enemyState = EnemyState.WALK;
@@ -97,30 +98,32 @@ public class EnemyBase : MonoBehaviour {
                 anim.SetBool("Walk", true);
             }
         }
-        
-        if(randomJumpWait != 0) {
-            jumpTimer += Time.deltaTime;
-        }
-        if(randomFacingWait != 0) {
-            facingTimer += Time.deltaTime;
-        }
-        if(randomAttackWait != 0) {
-            attackTimer += Time.deltaTime;
-        }
-        if(randomMoveWait != 0) {
-            moveTimer += Time.deltaTime;
-        }
-        if(jumpTimer > randomJumpWait && enemyState != EnemyState.JUMP) {
-            Jump();
-        }
-        if(facingTimer > randomFacingWait && enemyState != EnemyState.FACING) {
-            Facing();
-        }
-        if(attackTimer > randomAttackWait && enemyState != EnemyState.ATTACK) {
-            Attack();
-        }
-        if(moveTimer > randomMoveWait && enemyState != EnemyState.MOVE) {
-            Move();
+
+        if (enemyState != EnemyState.DOWN) {
+            if (randomJumpWait != 0) {
+                jumpTimer += Time.deltaTime;
+            }
+            if (randomFacingWait != 0) {
+                facingTimer += Time.deltaTime;
+            }
+            if (randomAttackWait != 0) {
+                attackTimer += Time.deltaTime;
+            }
+            if (randomMoveWait != 0) {
+                moveTimer += Time.deltaTime;
+            }
+            if (jumpTimer > randomJumpWait && enemyState != EnemyState.JUMP) {
+                Jump();
+            }
+            if (facingTimer > randomFacingWait && enemyState != EnemyState.FACING) {
+                Facing();
+            }
+            if (attackTimer > randomAttackWait && enemyState != EnemyState.ATTACK) {
+                Attack();
+            }
+            if (moveTimer > randomMoveWait && enemyState != EnemyState.MOVE) {
+                Move();
+            }
         }
     }
 
@@ -153,9 +156,16 @@ public class EnemyBase : MonoBehaviour {
     /// 破壊処理とスコア加算処理
     /// </summary>
     protected void Destroy() {
+        // 移動を止めて当たり判定をなくし、ダウンアニメ再生
+        isBonus = true;
+        rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        enemyState = EnemyState.DOWN;
+        anim.SetBool("Dead", true);
+
+        gameObject.layer = LayerMask.NameToLayer("DownEnemy");
         //　スコアコンポーネントを取得してポイントを渡す
         FindObjectOfType<Score>().AddPoint(scorePoint);
-        Destroy(gameObject);
+        Destroy(gameObject, 1.5f);
         //　ゲームクリアコンポーネントを取得してポイントを渡す
         FindObjectOfType<GameClearController>().AddDestroyPoint(enemyPoint);
         CreateItem();
@@ -345,10 +355,6 @@ public class EnemyBase : MonoBehaviour {
         moveTimer = 0;
         enemyState = EnemyState.WALK;
         randomMoveWait = Random.Range(m_ints[3].MinValue, m_ints[3].MaxValue);
-    }
-
-    public void Stopped() {
-        moveSpeed = 0;
     }
 }
 

@@ -6,10 +6,10 @@ using System.Collections;
 
 public class Life : MonoBehaviour {
 
-    [SerializeField, Header("リトライ用ポップアップ")]
+    [Header("リトライ用ポップアップ")]
     public RetryPopupManager retryPopup;
-    [SerializeField, Header("時間経過によるライフの減少速度")]
-    private float loss;
+    [Header("時間経過によるライフの減少速度")]
+    public float loss;
 
     public enum GameState {          //  WitchMoveでのキー操作やゲームオーバー判定にも利用する
         IN_PROGRESS,

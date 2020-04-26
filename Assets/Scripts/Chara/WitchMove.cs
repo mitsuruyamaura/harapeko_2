@@ -428,7 +428,6 @@ public class WitchMove : MonoBehaviour {
         yield return new WaitForSeconds(2.0f);
         isDamage = false;
         invisibleEffect.SetActive(true);
-        //sRenderer.color = new Color(1f, 1f, 1f, 1f);
         //レイヤーをPlayerに戻す
         gameObject.layer = LayerMask.NameToLayer("Player");
     }

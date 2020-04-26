@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TitleImageController : MonoBehaviour {
 
-    [SerializeField, HeaderAttribute("タイトル絵")]
+    [Header("タイトル")]
     public SpriteRenderer[] titleImage;
 
     /// <summary>
