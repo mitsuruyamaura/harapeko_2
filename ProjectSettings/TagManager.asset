@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - DamageObject
+  - Witch
+  - Bullet
+  - Enemy
+  - HP
+  - Construct
+  - Charge
+  - Mushroom
+  - apple
+  - Letter1
+  - Letter2
+  - Floor
+  - Post
+  - SoundManager
+  - FxTemporaire
+  - ScoreManager
+  - PopUpCanvas
+  - LeaderBoardManager
+  - MobileController
+  - ToastManager
+  - AdMob
+  - FadeCanvas
+  - Canvas
+  - MoveFloor
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Ground
+  - Player
+  - PlayerDamege
+  - Enemy
+  - EnemyDamage
+  - Item
+  - Bottom
+  - PlayerFall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Coin
+    uniqueID: 3534837493
+    locked: 0
+  - name: Block
+    uniqueID: 2494971979
+    locked: 0
+  - name: UI
+    uniqueID: 4086813705
+    locked: 0
+  - name: unit
+    uniqueID: 1464981701
+    locked: 0
