@@ -2,7 +2,7 @@
 
 public class BgmManager : MonoBehaviour {
 
-    public static BgmManager instance;
+    //public static BgmManager instance;
 
     [Header("ステージのBGM")]
     public AudioSource stageBGM;         //  各ステージごとのBGM。各ステージで変える
@@ -18,14 +18,14 @@ public class BgmManager : MonoBehaviour {
     public AudioClip[] bgms;
     public AudioClip[] ses;
 
-    void Awake() {
-        if (instance == null) {
-            instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        } else {
-            Destroy(this.gameObject);
-        }
-    }
+    //void Awake() {
+    //    if (instance == null) {
+    //        instance = this;
+    //        DontDestroyOnLoad(this.gameObject);
+    //    } else {
+    //        Destroy(this.gameObject);
+    //    }
+    //}
 
     void Start () {
         stageBGM.Play();
