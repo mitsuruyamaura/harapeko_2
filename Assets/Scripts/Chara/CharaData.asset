@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87939ceef0a35a34dbf0eaa53b8e8b43, type: 3}
+  m_Name: CharaData
+  m_EditorClassIdentifier: 
+  charaDatas:
+  - charaNum: 0
+    charaObj: {fileID: 1925516157119664, guid: caf7b6784c22f334187744b73ce36b3e, type: 2}
+    moveSpeed: 2.5
+    jumpPower: 300
+    chargePoint: 100
+    attackPower: 1
+    lifeLoss: 0.1
+    scoreBonus: 1
+  - charaNum: 1
+    charaObj: {fileID: 1327322818278146, guid: b7ba3f064f7170b47a0938ea989c2844, type: 2}
+    moveSpeed: 3
+    jumpPower: 300
+    chargePoint: 120
+    attackPower: 1
+    lifeLoss: 0.1
+    scoreBonus: 1.1
+  - charaNum: 2
+    charaObj: {fileID: 1224079901159328, guid: 616097ab943346a4c823df0dd002c3f4, type: 2}
+    moveSpeed: 2
+    jumpPower: 350
+    chargePoint: 100
+    attackPower: 2
+    lifeLoss: 0.1
+    scoreBonus: 1.2
+  - charaNum: 3
+    charaObj: {fileID: 1241687863032890, guid: c3b9b4e0b43b17f4b96691b120c23b4f, type: 2}
+    moveSpeed: 2.5
+    jumpPower: 300
+    chargePoint: 80
+    attackPower: 1
+    lifeLoss: 0.2
+    scoreBonus: 1.4
+  - charaNum: 4
+    charaObj: {fileID: 1898938332977206, guid: 9b2daec1202422c47bb128c34d849175, type: 2}
+    moveSpeed: 3
+    jumpPower: 300
+    chargePoint: 60
+    attackPower: 2
+    lifeLoss: 0.3
+    scoreBonus: 2
