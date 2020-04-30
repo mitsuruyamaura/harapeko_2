@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScoreBurstManager : MonoBehaviour {
+public class ScoreBoostManager : MonoBehaviour {
 
     [SerializeField, Header("スコアブーストポップアップ")]
-    public ScoreBurstPopup scoreBurstPopupPrefab;
+    public ScoreBoostPopup scoreBoostPopupPrefab;
 
     /// <summary>
     /// スコアブーストポップアップを生成する
     /// スコアブーストボタンより呼ばれる
     /// </summary>
 	public void CreateScoreBurstPopup() {
-        ScoreBurstPopup scoreBurstPopup =  Instantiate(scoreBurstPopupPrefab, GameObject.FindGameObjectWithTag("Canvas").transform, false);
-        scoreBurstPopup.OpenPopUp();
+        ScoreBoostPopup scoreBoostPopup =  Instantiate(scoreBoostPopupPrefab, GameObject.FindGameObjectWithTag("Canvas").transform, false);
+        scoreBoostPopup.OpenPopUp();
     }
 }

@@ -19,7 +19,6 @@ public class FadeManager : MonoBehaviour {
     
     private bool isCharaSet;
 
-    public AdMobBanner adMob;
     [Header("タイトル画面マスク用パネル")]
     public GameObject maskPanel;
 
@@ -48,7 +47,7 @@ public class FadeManager : MonoBehaviour {
                 isCharaSet = true;
             }
             canvas.enabled = true;
-            adMob.bannerView.Show();
+            AdMobBanner.instance.bannerView.Show();
             titleImageController.DisplayTitleMode();
         });
     }
@@ -72,7 +71,7 @@ public class FadeManager : MonoBehaviour {
         fade.FadeIn(0.7f, () =>
         {
             // バナー広告を非表示にする
-            adMob.bannerView.Hide();
+            AdMobBanner.instance.bannerView.Hide();
             fade.FadeOut(0.7f);
             titleImageController.DisplayChangeImage();
         });
@@ -84,7 +83,7 @@ public class FadeManager : MonoBehaviour {
     /// <param name="time"></param>
     public void TransitionStage(float time) {
         // バナー広告を破壊する
-        adMob.bannerView.Destroy();
+        AdMobBanner.instance.bannerView.Destroy();
         fade.FadeIn(0.7f, () =>
         {
             fade.FadeOut(time);

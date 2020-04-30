@@ -13,7 +13,7 @@ public class TitleImageController : MonoBehaviour {
     /// ランキングとチュートリアルを閉じた際にも呼び出し
     /// </summary>
     public void DisplayTitleMode() {
-        if(StageManager.gameClearCount == 0) {
+        if(GameData.instance.gameClearCount == 0) {
             titleImage[0].enabled = true;
         } else {
             // ノーマルステージ　クリア後

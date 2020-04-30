@@ -5,6 +5,8 @@ using GoogleMobileAds.Api;
 
 public class AdMobBanner : MonoBehaviour {
 
+    public static AdMobBanner instance;
+
     [SerializeField,Header("アプリID(デフォルトはテスト値)")]
     public string appId = "ca-app-pub-3940256099942544~3347511713";
     [SerializeField, Header("バナーの広告ユニットID(デフォルトはテスト値)")]
@@ -14,6 +16,15 @@ public class AdMobBanner : MonoBehaviour {
     public BannerView bannerView;
     public static int AdMobCount;              // 広告を見た通算カウント。保存する
     public static int currentAdMobCount;       // 起動中に広告を見た通算カウント。保存しない
+
+    void Awake() {
+        if (instance == null) {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        } else {
+            Destroy(this.gameObject);
+        }     
+    }
 
     void Start () {
         // TODO AndroidManifest.xml(NCMB)もテストアプリIDになっているので使用時には変更する

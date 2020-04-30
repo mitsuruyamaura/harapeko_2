@@ -22,7 +22,7 @@ public class LanguageSetting : MonoBehaviour {
 
     private void Start() {
         // 保存されている言語を取得。デフォルトは日本語
-        StageManager.language = PlayerPrefs.GetInt(LANGUAGE_NUM, 0);
+        GameData.instance.language = PlayerPrefs.GetInt(LANGUAGE_NUM, 0);
         DisplaySelectLanguage();
     }
 
@@ -31,11 +31,11 @@ public class LanguageSetting : MonoBehaviour {
     /// 設定ボタンを押す度に切り替える
     /// </summary>
     public void OnClickChangeLanguageSetting() {
-        StageManager.language++;
-        if (StageManager.language >= 3) {
-            StageManager.language = 0;          
+        GameData.instance.language++;
+        if (GameData.instance.language >= 3) {
+            GameData.instance.language = 0;          
         }
-        PlayerPrefs.SetInt(LANGUAGE_NUM, StageManager.language);
+        PlayerPrefs.SetInt(LANGUAGE_NUM, GameData.instance.language);
         PlayerPrefs.Save();
         DisplaySelectLanguage();
     }
@@ -44,7 +44,7 @@ public class LanguageSetting : MonoBehaviour {
     /// 選択している言語でタイトル画面のテキスト周りを表示
     /// </summary>
     public void DisplaySelectLanguage() {
-        switch (StageManager.language) {
+        switch (GameData.instance.language) {
             case 0:
                 selectLanguage.text = "日本語";
                 startBtnTxt.text = "スタート!!";

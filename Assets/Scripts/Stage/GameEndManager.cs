@@ -55,7 +55,7 @@ public class GameEndManager : MonoBehaviour {
     /// </summary>
     public void ExitChoice(){
         exitDialog.SetActive(true);
-        switch(StageManager.language){
+        switch(GameData.instance.language){
             case 0 :
                 noticeTxt.text = "遊んで くれて ありがとう !\n\nアプリ を 終了 しますか ？";
                 yesBtnTxt.text = "終了 する";

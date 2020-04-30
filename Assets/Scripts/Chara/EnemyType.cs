@@ -6,4 +6,5 @@
     TROLL,
     MAGE,
     KELBEROS,
+    HOUSE,
 }

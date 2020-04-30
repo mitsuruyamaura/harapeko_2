@@ -11,7 +11,18 @@ public class AdMobInterstitial : MonoBehaviour {
     public BannerView bannerView;
     public bool isShow;    // インステ広告の再生が終わったらtrueになる
 
-	void Start () {
+    public static AdMobInterstitial instance;
+
+    void Awake() {
+        if (instance == null) {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        } else {
+            Destroy(this.gameObject);
+        }
+    }
+
+    void Start () {
         // 起動時にインタースティシャル広告をロードしておく
         RequestInterstitial();
 	}
@@ -26,6 +37,7 @@ public class AdMobInterstitial : MonoBehaviour {
         AdRequest request = new AdRequest.Builder().Build();
         // インタースティシャルをロードしてリクエストに代入
         interstitialAd.LoadAd(request);
+        Debug.Log("Interstitial Load");
     }
 
     /// <summary>
@@ -49,7 +61,7 @@ public class AdMobInterstitial : MonoBehaviour {
     /// <summary>
     /// 広告ブーストボタンを押した時にインタースティシャルを再生する
     /// </summary>
-    public void OnClickAdMobButton() {
+    public void OnClickStartInterstitial() {
         interstitialAd.Show();
     }
 }

@@ -597,6 +597,10 @@ MonoBehaviour:
   counterText: {fileID: 114934316218112802}
   clearCount: 6
   destroyCount: 0
+  fireworks:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!82 &82281183989107628
 AudioSource:
   m_ObjectHideFlags: 0

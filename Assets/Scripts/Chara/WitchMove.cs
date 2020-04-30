@@ -45,16 +45,13 @@ public class WitchMove : MonoBehaviour {
         POWERFUL,
         DOWN
     }
-
     public WitchState witchState;    //  現在のキャラクターのステートを入れる
     
     Rigidbody2D rb;
     Animator anim;
     CapsuleCollider2D myCol;
     ParticleSystem particle;
-    //SpriteRenderer sRenderer;
     Life life;
-    //AdMob adMob;
 
     AudioSource sound1;                 //SE1-5
     AudioSource sound2;
@@ -84,7 +81,6 @@ public class WitchMove : MonoBehaviour {
         rt = life.GetComponent<RectTransform>();
         life.GetLifeLossSpeed(lifeLoss);
         GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<Score>().GetScoreBonus(scoreBonus);
-        //adMob = GameObject.FindGameObjectWithTag("AdMob").GetComponent<AdMob>();
 
         //  各コンポーネントを取得
         rb = GetComponent<Rigidbody2D>();
@@ -130,127 +126,134 @@ public class WitchMove : MonoBehaviour {
             //  アルファを制御して点滅しているように見せる
             //sRenderer.color = new Color(1f, 1f, 1f, level);
         }
-        if (life.gameState != Life.GameState.GAME_OVER) {     //  ゲームオーバーでないなら実行する
+        //  ゲームオーバーでないなら実行する
+        if (life.gameState != Life.GameState.GAME_OVER) {     
             //  ジャンプ処理
-            //  fly状態かどうか判定。fly状態なら無限ジャンプ
-            //  この状態からはnomalには戻らない。そのため、powerflで上書きされるまで有効
-            if (witchState == WitchState.FLY){
-                //  制限時間をカウント開始
-                witchStateTimer += Time.deltaTime;
-                if (witchStateTimer > 10.0f){
-                    UndoState();
+            Jump();
+
+            if (!isAttacked) {
+                //  攻撃処理
+                //  isAttakedでなければキー操作で弾を発射する
+                Attack();
+            }
+        }
+    }
+
+    private void Jump() {
+        //  fly状態かどうか判定。fly状態なら無限ジャンプ
+        //  この状態からはnomalには戻らない。そのため、powerflで上書きされるまで有効
+        if (witchState == WitchState.FLY) {
+            //  制限時間をカウント開始
+            witchStateTimer += Time.deltaTime;
+            if (witchStateTimer > 10.0f) {
+                UndoState();
+            }
+            //  ジャンプ連打で空中歩行。落下時はホバリング可能。
+            if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")) {
+                //  AddForceにて上方向へ力を加える
+                rb.AddForce(new Vector2(1, 1) * jumpPower / 2);
+            }
+        } else {   //  WitchStateがfly以外の場合。通常のジャンプ処理          
+                   //  Linecastでキャラの足元に地面があるか判定①　全般用
+            isGrounded = Physics2D.Linecast(
+            transform.position + transform.up * 1f,
+            transform.position - transform.up * 0.3f,
+            groundLayer);
+
+            //  Linecatでキャラの足元に地面があるか判定②　一番下の足場用
+            isBottomed = Physics2D.Linecast(
+            transform.position + transform.up * 0f,
+            transform.position - transform.up * 0.3f,
+            bottomLayer);
+
+            //  落下していなくてBottom以外の足場でスルー（矢印の下かSキーのいずれか）が押されている間にジャンプが押されたら
+            if (CrossPlatformInputManager.GetButtonDown("Through") || Input.GetButtonDown("Through")) {
+                if (isGrounded) {
+                    //  着地判定をさせず、ジャンプをさせない
+                    isGrounded = false;
+                    //  トリガーを入れて床をすり抜ける。OnTriggerExit2Dで戻す
+                    myCol.isTrigger = true;
+                    //  isTriggerを時間差で戻す処理を呼び出す
+                    StartCoroutine(LandingGround());
                 }
-                //  ジャンプ連打で空中歩行。落下時はホバリング可能。
-                if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")){
+            }
+            //  ジャンプ（スペースキーか矢印の上）を押したら
+            if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")) {
+                //  BottomかGroundに着地していたとき
+                if (isGrounded || isBottomed) {//&& isJumping == false ){
+                                               //  着地判定をfalse
+                    isGrounded = false;
+                    isBottomed = false;
                     //  AddForceにて上方向へ力を加える
-                    rb.AddForce(new Vector2(1, 1) * jumpPower/2);
-                }
-            } else {   //  WitchStateがfly以外の場合。通常のジャンプ処理          
-                //  Linecastでキャラの足元に地面があるか判定①　全般用
-                isGrounded = Physics2D.Linecast(
-                transform.position + transform.up * 1f,
-                transform.position - transform.up * 0.3f,
-                groundLayer);
-
-                //  Linecatでキャラの足元に地面があるか判定②　一番下の足場用
-                isBottomed = Physics2D.Linecast(
-                transform.position + transform.up * 0f,
-                transform.position - transform.up * 0.3f,
-                bottomLayer);
-
-                //  落下していなくてBottom以外の足場でスルー（矢印の下かSキーのいずれか）が押されている間にジャンプが押されたら
-                if (CrossPlatformInputManager.GetButtonDown("Through") || Input.GetButtonDown("Through")){
-                    if (isGrounded){
-                        //  着地判定をさせず、ジャンプをさせない
-                        isGrounded = false;
-                        //  トリガーを入れて床をすり抜ける。OnTriggerExit2Dで戻す
-                        myCol.isTrigger = true;
-                        //  isTriggerを時間差で戻す処理を呼び出す
-                        StartCoroutine(LandingGround());                     
-                    }                   
-                }
-                //  ジャンプ（スペースキーか矢印の上）を押したら
-                if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")){
-                    //  BottomかGroundに着地していたとき
-                    if (isGrounded || isBottomed ){//&& isJumping == false ){
-                        //  着地判定をfalse
-                        isGrounded = false;
-                        isBottomed = false;
-                        //  AddForceにて上方向へ力を加える
-                        rb.AddForce(new Vector2(1, 1) * jumpPower);
-                        //  SE
-                        sound1.PlayOneShot(sound1.clip);
-                    }
-                }
-                //  上下への移動速度を取得
-                //float velY = rigidbody2D.velocity.y;
-
-                //  移動速度が0.1よりも大きければ上昇
-                //isJumping = velY > 0.1f ? true : false;
-
-                //  移動速度が0.1よりも小さければ下降
-                //isFalling = velY < 0.1f ? true : false;                
-            }
-            //ここまでジャンプ処理
-
-            //  攻撃処理
-            //  isAttakedでなければキー操作で弾を発射する
-            //  Powerful状態かどうか判定
-            if(!isAttacked) {
-                if(witchState == WitchState.POWERFUL) {
-                    //  制限時間をカウント開始
-                    witchStateTimer += Time.deltaTime;
-                    //　10秒経過したら
-                    if(witchStateTimer > 10.0f) {
-                        UndoState();
-                    }
-                    //  Power状態での攻撃。すべてチャージショット。なので常にparticle点滅。
-                    if(CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
-                        //　チャージ攻撃でオブジェクト貫通弾
-                        StartCoroutine(CreateBullet(powerfulStar, 1.0f));
-                    }
-                } else {  //  witchStateがPowerful状態でないなら（通常かFly状態）
-                    if(CrossPlatformInputManager.GetButton("Action") || Input.GetButton("Action")) {
-                        //  チャージ攻撃カウント用
-                        chargeCount += Time.deltaTime;
-                    }
-                    if(CrossPlatformInputManager.GetButtonDown("Action") || Input.GetButtonDown("Action")) {
-                        //   チャージ状態を示すParticleとSEを鳴らす
-                        particle.Play();
-                        sound4.PlayOneShot(sound4.clip);
-                    }
-                    //　キーを離した時のカウントの内容で分岐
-                    if(CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
-                        if(chargeCount < 1.5f) {
-                            //  チャージのカウントが足りない場合、通常攻撃
-                            StartCoroutine(CreateBullet(candyBullet, 0.4f));
-                            
-                            //  fly状態でなければ効果音ならす。割れ防止。
-                            if(witchState != WitchState.FLY) {
-                                sound2.PlayOneShot(sound2.clip);
-                            }
-                        } else {
-                            //　チャージ攻撃
-                            StartCoroutine(CreateBullet(attackStar, 1.0f));
- 
-                            //  Lifeスクリプトのライフの減算メソッドを呼び出す
-                            life.SubtractLife(chargePoint);
-                            CheckLife();
-
-                            //  fly状態でなければ効果音ならす。割れ防止。
-                            if(witchState != WitchState.FLY) {
-                                sound3.PlayOneShot(sound3.clip);
-                            }
-                        }
-                        chargeCount = 0;
-                    }
-                    //  パーティクルが再生中＋キーが上がったらパーティクルの再生を止める
-                    if(particle.isPlaying && CrossPlatformInputManager.GetButtonUp("Action") || particle.isPlaying && Input.GetButtonUp("Action")) {
-                        particle.Stop();
-                    }
+                    rb.AddForce(new Vector2(1, 1) * jumpPower);
+                    //  SE
+                    sound1.PlayOneShot(sound1.clip);
                 }
             }
-            //  ここまで攻撃判定      
+            //  上下への移動速度を取得
+            //float velY = rigidbody2D.velocity.y;
+
+            //  移動速度が0.1よりも大きければ上昇
+            //isJumping = velY > 0.1f ? true : false;
+
+            //  移動速度が0.1よりも小さければ下降
+            //isFalling = velY < 0.1f ? true : false;                
+        }
+    }
+
+    private void Attack() {
+        // Powerful状態かどうか判定
+        if (witchState == WitchState.POWERFUL) {
+            //  制限時間をカウント開始
+            witchStateTimer += Time.deltaTime;
+            //　10秒経過したら
+            if (witchStateTimer > 10.0f) {
+                UndoState();
+            }
+            //  Power状態での攻撃。すべてチャージショット。なので常にparticle点滅。
+            if (CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
+                //　チャージ攻撃でオブジェクト貫通弾
+                StartCoroutine(CreateBullet(powerfulStar, 1.0f));
+            }
+        } else {  //  witchStateがPowerful状態でないなら（通常かFly状態）
+            if (CrossPlatformInputManager.GetButton("Action") || Input.GetButton("Action")) {
+                //  チャージ攻撃カウント用
+                chargeCount += Time.deltaTime;
+            }
+            if (CrossPlatformInputManager.GetButtonDown("Action") || Input.GetButtonDown("Action")) {
+                //   チャージ状態を示すParticleとSEを鳴らす
+                particle.Play();
+                sound4.PlayOneShot(sound4.clip);
+            }
+            //　キーを離した時のカウントの内容で分岐
+            if (CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
+                if (chargeCount < 1.5f) {
+                    //  チャージのカウントが足りない場合、通常攻撃
+                    StartCoroutine(CreateBullet(candyBullet, 0.4f));
+
+                    //  fly状態でなければ効果音ならす。割れ防止。
+                    if (witchState != WitchState.FLY) {
+                        sound2.PlayOneShot(sound2.clip);
+                    }
+                } else {
+                    //　チャージ攻撃
+                    StartCoroutine(CreateBullet(attackStar, 1.0f));
+
+                    //  Lifeスクリプトのライフの減算メソッドを呼び出す
+                    life.SubtractLife(chargePoint);
+                    CheckLife();
+
+                    //  fly状態でなければ効果音ならす。割れ防止。
+                    if (witchState != WitchState.FLY) {
+                        sound3.PlayOneShot(sound3.clip);
+                    }
+                }
+                chargeCount = 0;
+            }
+            //  パーティクルが再生中＋キーが上がったらパーティクルの再生を止める
+            if (particle.isPlaying && CrossPlatformInputManager.GetButtonUp("Action") || particle.isPlaying && Input.GetButtonUp("Action")) {
+                particle.Stop();
+            }
         }
     }
 

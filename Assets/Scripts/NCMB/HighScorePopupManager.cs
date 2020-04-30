@@ -21,9 +21,7 @@ public class HighScorePopupManager : MonoBehaviour {
     /// アニメ付きでハイスコアポップアップ表示
     /// </summary>
     public void OpenPopUp() {
-        Vector3 scalePos = popUp.transform.localScale;    //  拡大・縮小表示する描画用オブジェクトのScale値を取得する
-        popUp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);          //  拡大・縮小表示する描画用オブジェクトのScale値を最小値にする
-        iTween.ScaleTo(popUp, iTween.Hash("x", scalePos.x, "y", scalePos.y, "z", scalePos.z, "time", 2.0f));  //  元の大きさまでアニメで表示
+        transform.DOScale(1.0f, 0.5f);
         viewHighScore.DipslayHighScore();
     }
 
@@ -42,7 +40,7 @@ public class HighScorePopupManager : MonoBehaviour {
         if(!isSend) {
             isSend = true;
             playerName = getInput.GetText();
-            HighScore high = new HighScore(Score.highScore, playerName);
+            HighScore high = new HighScore(GameData.instance.highScore, playerName);
             IEnumerator coroutine = high.Save(high);
             yield return StartCoroutine(coroutine);
             StartCoroutine(ClosePopUp((bool)coroutine.Current));
@@ -60,10 +58,8 @@ public class HighScorePopupManager : MonoBehaviour {
         toastPopUp.SetActive(true);
         toastPopUp.GetComponent<ToastText>().DisplayToast(isSaved);
         yield return new WaitForSeconds(1.0f);
-        Vector3 scalePos = popUp.transform.localScale;                          //  拡大・縮小表示する描画用オブジェクトのScale値を取得する
-        popUp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);             //  拡大・縮小表示する描画用オブジェクトのScale値を最小値にする
-        iTween.ScaleFrom(popUp, iTween.Hash("x", scalePos.x, "y", scalePos.y, "z", scalePos.z, "time", 0.8f));  //  元の大きさまでアニメで表示
-        yield return new WaitForSeconds(0.8f);
+        transform.DOScale(0f, 0.5f);
+        yield return new WaitForSeconds(0.5f);
         // タイトル画面へ戻る
         isSend = false;
         StageManager stageManager = GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<StageManager>();

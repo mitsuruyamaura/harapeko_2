@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class RetryPopupManager : MonoBehaviour {
 
     [Header("リトライポップアップ制御用")]
     public GameObject popUp;
-    [Header("広告管理")]
-    public AdMobInterstitial inste;
+
     [Header("デバッグ切り替え。trueならデバッグオン")]
     public bool isDebug;
     private float admobTimer;
@@ -20,10 +20,8 @@ public class RetryPopupManager : MonoBehaviour {
     /// リトライ確認ポップアップを開く
     /// </summary>
     /// <returns></returns>
-    public void OpenPopUp () {       
-        Vector3 scalePos = popUp.transform.localScale;    //  拡大・縮小表示する描画用オブジェクトのScale値を取得する
-        popUp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);          //  拡大・縮小表示する描画用オブジェクトのScale値を最小値にする
-        iTween.ScaleTo(popUp, iTween.Hash("x", scalePos.x, "y", scalePos.y, "z", scalePos.z, "time", 2.0f));  //  元の大きさまでアニメで表示
+    public void OpenPopUp () {
+        transform.DOScale(1.0f, 0.5f);
     }
 
     /// <summary>
@@ -32,9 +30,7 @@ public class RetryPopupManager : MonoBehaviour {
     public void OnClickRetryBtn() {
         if (!isSelectionButton) {
             if (!isDebug) {
-                Vector3 scalePos = popUp.transform.localScale;                          //  拡大・縮小表示する描画用オブジェクトのScale値を取得する
-                popUp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);             //  拡大・縮小表示する描画用オブジェクトのScale値を最小値にする
-                iTween.ScaleFrom(popUp, iTween.Hash("x", scalePos.x, "y", scalePos.y, "z", scalePos.z, "time", 0.8f));  //  元の大きさまでアニメで表示
+                transform.DOScale(0f, 0.5f);
             }
             // 広告を再生する
             StartCoroutine(InterstitialShow());
@@ -94,12 +90,11 @@ public class RetryPopupManager : MonoBehaviour {
         yield return new WaitForSeconds(0.8f);
         if (!isDebug) {
             // インステ広告を再生する
-            inste.interstitialAd.Show();
-            inste.isShow = true;
+            AdMobInterstitial.instance.OnClickStartInterstitial();
         } else {
             // 代わりに30秒間のカウントダウンを表示する
             admobTimer = 2.0f;
         }     
-        Score.isRetry = true;
+        GameData.instance.isRetry = true;
     }
 }

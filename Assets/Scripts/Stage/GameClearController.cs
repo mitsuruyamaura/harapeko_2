@@ -12,6 +12,8 @@ public class GameClearController : MonoBehaviour {
 
     private AudioSource sound1;    // 敵を倒した際のSE
 
+    public FireWorks[] fireworks;
+
     void Start() {
         // 敵を倒す数を設定。画面にカウントダウン表示用
         resaltCount = clearCount;
@@ -26,7 +28,7 @@ public class GameClearController : MonoBehaviour {
     /// </summary>
     public void DisplayResultText() {
         // 満腹ゲージ下部にクリアまでに必要な敵のカウント数を常時更新して表示
-        switch (StageManager.language){
+        switch (GameData.instance.language){
             case 0:         
             counterText.text = "あと " + resaltCount + " ひき やっつければクリア";
                 break;
@@ -79,15 +81,18 @@ public class GameClearController : MonoBehaviour {
         GameObject.Find("SoundManager").GetComponent<BgmManager>().GameClear();
         // スコアアタックモードでないなら次のステージへ遷移させる処理を呼ぶ
         GameObject.Find("ScoreManager").GetComponent<StageManager>().NextStage(1);
+        for (int i = 0; i < fireworks.Length; i++) {
+            fireworks[i].SetOffFireWorks(Random.Range(0.5f, 1.5f));
+        }
         // ３か所で花火を打ち上げて、エクセレントクリアなら同じ位置でボーナス宝石を打ち上げる
-        FireWorks fireWorks = GameObject.Find("FireWorks").GetComponent<FireWorks>();
-        FireWorks fireWorks1 = GameObject.Find("FireWorks1").GetComponent<FireWorks>();
-        FireWorks fireWorks2 = GameObject.Find("FireWorks2").GetComponent<FireWorks>();        
-        var randomWait = Random.Range(0.5f, 1.5f);
-        var randomWait1 = Random.Range(0.5f, 1.5f);
-        var randomWait2 = Random.Range(0.5f, 1.5f);
-        fireWorks.SetOffFireWorks(randomWait);
-        fireWorks1.SetOffFireWorks(randomWait1);
-        fireWorks2.SetOffFireWorks(randomWait2);
+        //FireWorks fireWorks = GameObject.Find("FireWorks").GetComponent<FireWorks>();
+        //FireWorks fireWorks1 = GameObject.Find("FireWorks1").GetComponent<FireWorks>();
+        //FireWorks fireWorks2 = GameObject.Find("FireWorks2").GetComponent<FireWorks>();        
+        //var randomWait = Random.Range(0.5f, 1.5f);
+        //var randomWait1 = Random.Range(0.5f, 1.5f);
+        //var randomWait2 = Random.Range(0.5f, 1.5f);
+        //fireWorks.SetOffFireWorks(randomWait);
+        //fireWorks1.SetOffFireWorks(randomWait1);
+        //fireWorks2.SetOffFireWorks(randomWait2);
     }
 }

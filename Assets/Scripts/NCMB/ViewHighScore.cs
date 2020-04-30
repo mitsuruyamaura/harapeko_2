@@ -12,6 +12,6 @@ public class ViewHighScore : MonoBehaviour {
     /// </summary>
     public void DipslayHighScore() {
         // カンマをつけて表示
-        viewHighScoreText.text = Score.highScore.ToString("N0");
+        viewHighScoreText.text = GameData.instance.highScore.ToString("N0");
     }	
 }

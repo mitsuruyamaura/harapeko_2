@@ -52,7 +52,7 @@ public class Life : MonoBehaviour {
             }
         }
         // ゲームオーバー状態でハイスコアの更新がないなら画面タップでタイトルに戻す
-        if(gameState == GameState.GAME_OVER && !Score.isNewRecord) {
+        if(gameState == GameState.GAME_OVER && !GameData.instance.isNewRecord) {
             //  ActionボタンかJumpボタンを押すと
             if(CrossPlatformInputManager.GetButtonDown("Action") || CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetKeyDown("space")) {
                 //SceneManager.LoadScene("Title");
@@ -114,8 +114,8 @@ public class Life : MonoBehaviour {
         //stageManager.ResetStageCount(1);
         //StartCoroutine(stageManager.CheckHighScore(3.0f));
         // エクセレント回数をリセットする
-        StageManager.excelentCount = 0;
-        Debug.Log(StageManager.excelentCount);
+        GameData.instance.excelentCount = 0;
+        Debug.Log(GameData.instance.excelentCount);
         // リトライ確認ポップアップを生成し、開く
         StartCoroutine(CreateRetryPopup());
     }
@@ -145,8 +145,8 @@ public class Life : MonoBehaviour {
                 GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ResultDisplayManager>().DisplayClearText(false);
                 // witch0以外はノーマルクリアだとエクセレントの回数が途切れる
                 if(GameObject.FindGameObjectWithTag("Witch").GetComponent<WitchMove>().charaNum != 0) {
-                    StageManager.excelentCount = 0;
-                    Debug.Log(StageManager.excelentCount);
+                    GameData.instance.excelentCount = 0;
+                    Debug.Log(GameData.instance.excelentCount);
                 }
             } else {
                 // エクセレントフラグを立ててリザルトテキスト表示
@@ -154,12 +154,12 @@ public class Life : MonoBehaviour {
                 GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ResultDisplayManager>().DisplayClearText(true);
                 // ボーナスステージ以外ならエクセレント回数を加算
                 if(SceneManager.GetActiveScene().name != "Bonus_Stage") {
-                    StageManager.excelentCount++;
-                    Debug.Log(StageManager.excelentCount);
+                    GameData.instance.excelentCount++;
+                    Debug.Log(GameData.instance.excelentCount);
                 }
-                if(StageManager.excelentCount >= 5 && !CharaSet.achievements[3]){
+                if(GameData.instance.excelentCount >= 5 && !GameData.instance.achievements[3]){
                     // witch4追加
-                    CharaSet.achievements[3] = true;
+                    GameData.instance.achievements[3] = true;
                     CharaSet.SaveAchievement(3);
                 }
             }

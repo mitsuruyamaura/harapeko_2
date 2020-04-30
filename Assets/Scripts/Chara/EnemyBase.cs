@@ -160,9 +160,11 @@ public class EnemyBase : MonoBehaviour {
         isBonus = true;
         rb.velocity = new Vector3(0, rb.velocity.y, 0);
         enemyState = EnemyState.DOWN;
-        anim.SetBool("Dead", true);
-
-        gameObject.layer = LayerMask.NameToLayer("DownEnemy");
+        if (enemyType != EnemyType.HOUSE) {
+            // ボーナスハウス以外
+            anim.SetBool("Dead", true);
+            gameObject.layer = LayerMask.NameToLayer("DownEnemy");
+        }
         //　スコアコンポーネントを取得してポイントを渡す
         FindObjectOfType<Score>().AddPoint(scorePoint);
         Destroy(gameObject, 1.5f);

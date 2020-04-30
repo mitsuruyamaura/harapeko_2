@@ -5,9 +5,6 @@ using DG.Tweening;
 
 public class CharaSet : MonoBehaviour {
 
-    [Header("開放済キャラクター管理")]
-    public static bool[] achievements = new bool[5];
-
     [Header("キャラクター選択用ポップアップ")]
     public GameObject charaSelectPopUp;
     
@@ -29,8 +26,6 @@ public class CharaSet : MonoBehaviour {
     [Header("キャラの足場")]
     public GameObject[] grounds;
 
-    [Header("バナー広告制御用")]
-    public AdMobBanner abMobBanner;
     [Header("デバッグモード用")]
     public DebugSwitch debug;
 
@@ -49,8 +44,8 @@ public class CharaSet : MonoBehaviour {
 
         LoadAchievement();
         // 初回起動時のみ初期キャラを使用可能キャラに設定し保存
-        if (!achievements[0]) {
-            achievements[0] = true;
+        if (!GameData.instance.achievements[0]) {
+            GameData.instance.achievements[0] = true;
             SaveAchievement(0);
             Debug.Log("witch_1");
         }
@@ -68,7 +63,7 @@ public class CharaSet : MonoBehaviour {
     /// クリア状態の判定処理
     /// </summary>
     private void CheckNormalModeCleared() {
-        switch (StageManager.language) {
+        switch (GameData.instance.language) {
             case 0:
                 normalModeText.text = "のーまる コースで\nゲームスタート!!";
                 break;
@@ -79,9 +74,9 @@ public class CharaSet : MonoBehaviour {
                 normalModeText.text = "开始\n正常的课程!!";
                 break;
         }        
-        if (StageManager.gameClearCount <= 0) {
+        if (GameData.instance.gameClearCount <= 0) {
             hardModeBtn.interactable = false;
-            switch (StageManager.language) {
+            switch (GameData.instance.language) {
                 case 0:
                     hardModeText.text = "はーど コース\n未開放";
                     break;
@@ -94,7 +89,7 @@ public class CharaSet : MonoBehaviour {
             }        
         } else {
             hardModeBtn.interactable = true;
-            switch (StageManager.language) {
+            switch (GameData.instance.language) {
                 case 0:
                     hardModeText.text = "はーど コースで\nゲーム スタート!!";
                     break;
@@ -113,7 +108,7 @@ public class CharaSet : MonoBehaviour {
     /// </summary>
     public void OnClickStartButton() {
         // バナー広告や各種ボタンを非表示にする
-        abMobBanner.bannerView.Hide();
+        AdMobBanner.instance.bannerView.Hide();
         buttonsCanvasGroup.alpha = 0;
         charaSelectPopUp.SetActive(true);
         // 追加キャラの取得とコースクリア状態の再取得
@@ -121,8 +116,8 @@ public class CharaSet : MonoBehaviour {
         CheckNormalModeCleared();
         transform.DOScale(originalSize, 0.5f);
 
-        CreateIcon();     
-        StageManager.selectCharaNum = -1;
+        CreateIcon();
+        GameData.instance.selectCharaNum = -1;
     }
 
     /// <summary>
@@ -131,22 +126,22 @@ public class CharaSet : MonoBehaviour {
     /// </summary>
     private void CreateIcon() {
         icons[0].SetActive(true);
-        if(achievements[1]) {
+        if(GameData.instance.achievements[1]) {
             icons[1].SetActive(true);
         } else {
             masks[0].SetActive(true);
         }
-        if(achievements[2]) {
+        if(GameData.instance.achievements[2]) {
             icons[2].SetActive(true);
         } else { 
             masks[1].SetActive(true);
         }
-        if(achievements[3]) {
+        if(GameData.instance.achievements[3]) {
             icons[3].SetActive(true);
         } else {
             masks[2].SetActive(true);
         }
-        if(achievements[4]) {
+        if(GameData.instance.achievements[4]) {
             icons[4].SetActive(true);
         } else {
             masks[3].SetActive(true);
@@ -159,8 +154,8 @@ public class CharaSet : MonoBehaviour {
     /// 画面のアイコンを押すと呼び出し。intはボタンから取得
     /// </summary>
     public void SelectChara(int num) {
-        StageManager.selectCharaNum = num;
-        ViewDetailText(StageManager.selectCharaNum);
+        GameData.instance.selectCharaNum = num;
+        ViewDetailText(GameData.instance.selectCharaNum);
     }
 
     /// <summary>
@@ -168,7 +163,7 @@ public class CharaSet : MonoBehaviour {
     /// マスクのアイコンを押すと表示される
     /// </summary>
     public void ViewAchievedDetail(int num) {
-        StageManager.selectCharaNum = -1;
+        GameData.instance.selectCharaNum = -1;
         for(int i = 0; i < charas.Length; i++) {
             // キャラと足場を消す
             charas[i].SetActive(false);
@@ -246,7 +241,7 @@ public class CharaSet : MonoBehaviour {
     /// </summary>
     private bool CheckSelectedChara() {
         bool isCheck = false;
-        if(StageManager.selectCharaNum < 0) {
+        if(GameData.instance.selectCharaNum < 0) {
             detailText.text = "おかし(キャラ)を 選択してから おしてね。";
         } else {
             isCheck = true;
@@ -260,19 +255,19 @@ public class CharaSet : MonoBehaviour {
     /// </summary>
     public static void SaveAchievement(int charaNum) {
         // achievements[]をint型にキャストして代入。trueなら1
-        PlayerPrefs.SetInt(WITCH_ACHIEVEMENT + charaNum.ToString(), (achievements[charaNum]) ? 1 : 0);
+        PlayerPrefs.SetInt(WITCH_ACHIEVEMENT + charaNum.ToString(), (GameData.instance.achievements[charaNum]) ? 1 : 0);
         PlayerPrefs.Save();
-        Debug.Log(achievements[charaNum]);
+        Debug.Log(GameData.instance.achievements[charaNum]);
     }
 
     /// <summary>
     /// 追加キャラの読み込み
     /// </summary>
     private void LoadAchievement() {
-        for(int i = 0; i < achievements.Length; i++) {
+        for(int i = 0; i < GameData.instance.achievements.Length; i++) {
             // witch_iが1かどうかを見てbool型にキャストして代入。1ならtrue
-            achievements[i] = (PlayerPrefs.GetInt(WITCH_ACHIEVEMENT + i.ToString(), 0) == 1);
-            Debug.Log(achievements[i]);
+            GameData.instance.achievements[i] = (PlayerPrefs.GetInt(WITCH_ACHIEVEMENT + i.ToString(), 0) == 1);
+            Debug.Log(GameData.instance.achievements[i]);
         }
         if (debug.debugModeOn) {
             // デバッグスイッチがオンなら追加キャラのデバッグモードを設定する
@@ -298,6 +293,6 @@ public class CharaSet : MonoBehaviour {
 
         charaSelectPopUp.SetActive(false);
         buttonsCanvasGroup.alpha = 1.0f;
-        abMobBanner.bannerView.Show();
+        AdMobBanner.instance.bannerView.Show();
     }
 }

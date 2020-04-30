@@ -7,22 +7,22 @@ public class StageManager : MonoBehaviour {
     [SerializeField, Header("ハイスコアポップアップ表示")]
     public GameObject highScorePopup;
 
-    public static int gameClearCount;     //  クリアした回数
-    public static int stage = 1;          //  クリアしたステージ数の管理数値
-    public static int excelentCount;      //  エクセレントでクリアした回数
-    public static int difficulty;         //  難易度管理
-    public static int selectCharaNum;     //  選択しているキャラ
-    public static int language;           //  使用言語
-
     private string CLEAR_COUNT = "clearCount";
 
-    void Awake() {
-        //  ゲームのクリア回数を取得し、スコアや難易度などをリセット
-        if(SceneManager.GetActiveScene().name == "Title") {
-            gameClearCount = PlayerPrefs.GetInt("clearCount", 0);
-            Debug.Log(gameClearCount);
-            ResetStageCount(1);
-        }
+    void Start() {
+        // ステージ情報などを初期化
+        ResetStageCount(1);
+    }
+
+    /// <summary>
+    /// ステージ周りのリセット処理
+    /// ゲーム起動時、全ステージクリア時、ゲームオーバー時にタイトルへ戻るから呼び出し
+    /// </summary>
+    /// <param name="stagereset = 1"></param>
+    public void ResetStageCount(int stagereset) {
+        GameData.instance.stage = stagereset;
+        GameData.instance.excelentCount = 0;
+        GameData.instance.difficulty = 0;
     }
 
     /// <summary>
@@ -33,13 +33,13 @@ public class StageManager : MonoBehaviour {
         // トランジション用のフェイドアウト処理を入れる
         GameObject.FindGameObjectWithTag("FadeCanvas").GetComponent<FadeManager>().TransitionStage(0.7f);
         yield return new WaitForSeconds(0.7f);
-        difficulty = difficultyNum;
-        if(difficulty == 0) {
+        GameData.instance.difficulty = difficultyNum;
+        if(GameData.instance.difficulty == 0) {
             // のーまる
-            SceneManager.LoadScene("Stage_1");
+            SceneManager.LoadScene(StageType.Stage_.ToString() + GameData.instance.stage.ToString());
         } else {
             // はーど
-            SceneManager.LoadScene("Stage_6");
+            SceneManager.LoadScene(StageType.Stage_.ToString() + (5 + GameData.instance.stage).ToString());
         }
     }
 
@@ -60,97 +60,74 @@ public class StageManager : MonoBehaviour {
     IEnumerator Next(int stageCount) {
         if(!DebugSwitch.isTitleReturnFlg && GameObject.FindGameObjectWithTag("HP").GetComponent<Life>().gameState != Life.GameState.GAME_OVER) {
             // デバッグフラグがなく、ゲームオーバーでなければ次のステージへ移行
-            stage += stageCount;
-            Debug.Log(stage);
+            GameData.instance.stage += stageCount;
+            Debug.Log(GameData.instance.stage);
         } else {
             // デバッグフラグオンならクリア時に常にタイトルに戻す
-            stage = stageCount;
-            Debug.Log(stage);
+            GameData.instance.stage = stageCount;
+            Debug.Log(GameData.instance.stage);
         }
         yield return new WaitForSeconds(10f);
         // ボーナスステージ以外ならトランジション用のフェイドアウト処理を入れる
-        if (stage != 7) {
+        if (GameData.instance.stage != 7) {
             GameObject.FindGameObjectWithTag("FadeCanvas").GetComponent<TransitionManager>().TransFadeOut(0.7f);
         }
         yield return new WaitForSeconds(0.7f);
         // ローカルのhighscorのセーブ
         GetComponent<Score>().Save();       
-        if (difficulty == 0) {
-            switch(stage) {
+        if (GameData.instance.difficulty == 0) {
+            switch(GameData.instance.stage) {
                 case 1:
                     // デバッグ用。リセットしてタイトルへ戻す。ハイスコア更新確認なし
                     ResetStageCount(1);
                     ReturnTitle();
                     break;
-                case 2:
-                    SceneManager.LoadScene("Stage_2");
-                    break;
+                case 2:                    
                 case 3:
-                    SceneManager.LoadScene("Stage_3");
-                    break;
                 case 4:
-                    SceneManager.LoadScene("Stage_4");
-                    break;
                 case 5:
-                    SceneManager.LoadScene("Stage_5");
+                    SceneManager.LoadScene(StageType.Stage_.ToString() + GameData.instance.stage.ToString());
                     break;
                 case 6:
-                    SceneManager.LoadScene("Bonus_Stage");
+                    SceneManager.LoadScene(StageType.Bonus_Stage.ToString());
                     break;
                 case 7:
-                    if(gameClearCount >= 0 && !CharaSet.achievements[1]){
-                            // witch2追加
-                            CharaSet.achievements[1] = true;
-                            CharaSet.SaveAchievement(1);
+                    if (GameData.instance.gameClearCount >= 0 && !GameData.instance.achievements[1]) {
+                        // witch2追加
+                        GameData.instance.achievements[1] = true;
+                        CharaSet.SaveAchievement(1);
                     }
-                    gameClearCount++;
+                    GameData.instance.gameClearCount++;
                     SaveClearCount();
                     ResetStageCount(1);
                     StartCoroutine(CheckHighScore());
                     break;                
             }
         }
-        if(difficulty == 1) {
-            switch(stage) {
+        if(GameData.instance.difficulty == 1) {
+            switch(GameData.instance.stage) {
                 case 2:
-                    SceneManager.LoadScene("Stage_7");
-                    break;
                 case 3:
-                    SceneManager.LoadScene("Stage_8");
-                    break;
                 case 4:
-                    SceneManager.LoadScene("Stage_9");
-                    break;
                 case 5:
-                    SceneManager.LoadScene("Stage_10");
+                    SceneManager.LoadScene(StageType.Stage_.ToString() + (5 + GameData.instance.stage).ToString());
                     break;
                 case 6:
-                    SceneManager.LoadScene("Bonus_Stage");
+                    SceneManager.LoadScene(StageType.Bonus_Stage.ToString());
                     break;
                 case 7:
-                    if(gameClearCount >= 1 && !CharaSet.achievements[2]) {
-                            // witch3追加
-                            CharaSet.achievements[2] = true;
-                            CharaSet.SaveAchievement(2);
+                    if (GameData.instance.gameClearCount >= 1 && !GameData.instance.achievements[2]) {
+                        // witch3追加
+                        GameData.instance.achievements[2] = true;
+                        CharaSet.SaveAchievement(2);
                     }
-                    gameClearCount++;
+                    GameData.instance.gameClearCount++;
                     SaveClearCount();
                     ResetStageCount(1);
                     StartCoroutine(CheckHighScore());
                     break;
             }
         }
-    }
-
-    /// <summary>
-    /// ステージ周りのリセット処理
-    /// ゲーム起動時、全ステージクリア時、ゲームオーバー時にタイトルへ戻るから呼び出し
-    /// </summary>
-    /// <param name="stagereset = 1"></param>
-    public void ResetStageCount(int stagereset) {
-        stage = stagereset;
-        excelentCount = 0;
-        difficulty = 0;
     }
 
     /// <summary>
@@ -162,7 +139,7 @@ public class StageManager : MonoBehaviour {
     public IEnumerator CheckHighScore(float waitCount = 0.0f) {
         // ゲームオーバー時のみwaitCountが入り3秒待機
         yield return new WaitForSeconds(waitCount);
-        if(!DebugSwitch.isHighscoreFlg && Score.isNewRecord) {
+        if(!DebugSwitch.isHighscoreFlg && GameData.instance.isNewRecord) {
             // 更新のスキップオフでハイスコア更新ならリザルト表示を消してポップアップ表示
             GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ResultDisplayManager>().HiddenResultText();
             SetHighScore();
@@ -194,15 +171,15 @@ public class StageManager : MonoBehaviour {
         // トランジション用フェイドイン処理
         GameObject.FindGameObjectWithTag("FadeCanvas").GetComponent<TransitionManager>().TransFadeOut(0.7f);
         yield return new WaitForSeconds(0.7f);
-        SceneManager.LoadScene("Title");
+        SceneManager.LoadScene(StageType.Title.ToString());
     }
 
     /// <summary>
     /// クリア回数の保存処理
     /// </summary>
     private void SaveClearCount() {
-        PlayerPrefs.SetInt(CLEAR_COUNT, gameClearCount);
-        Debug.Log(gameClearCount);
+        PlayerPrefs.SetInt(CLEAR_COUNT, GameData.instance.gameClearCount);
+        Debug.Log(GameData.instance.gameClearCount);
         PlayerPrefs.Save();
         Debug.Log("Save to gameClearCount");
     }

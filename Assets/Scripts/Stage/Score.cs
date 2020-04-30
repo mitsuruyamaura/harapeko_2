@@ -2,41 +2,35 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using DG.Tweening;
 
 public class Score : MonoBehaviour {
 
-    public Text scoreText;                  //  Text表示用
+    // Text表示用
+    public Text scoreText;
     public Text highScoreText;
-
-    public static float score;              //  シーン間で引き継ぐため
-    public static float highScore;　　　　　//　シーン間で引き継ぐため
 
     string highScoreKey = "highScore";      //  PlayerPrefsで保存するためのキー
     private float scoreBonus;               //  スコアへの修正
-    public static bool isNewRecord;         //  ハイスコアが更新されたか判定。trueならハイスコアポップアップ表示処理オン
-
-    public static float initScore;　　　　　// ステージ開始時のscore保存用
-    public static float initHighScore;      // ステージ開始時のhighscore保存用
-    public static bool isRetry;             // リトライ確定フラグ。RetryPopupのインステ広告再生後にtrueになる
-
+    
     void Start() {
-        Debug.Log(isRetry);
+        Debug.Log(GameData.instance.isRetry);
         // タイトルなら初期化する
         if(SceneManager.GetActiveScene().name == "Title") {
             Initialize();
         }
         // リトライならステージ開始時のスコアとハイスコアに戻す
-        if (isRetry) {
-            score = initScore;
-            highScore = initHighScore;
+        if (GameData.instance.isRetry) {
+            GameData.instance.score = GameData.instance.initScore;
+            GameData.instance.highScore = GameData.instance.initHighScore;
         } else {
             // リトライでないなら、開始時のスコアとハイスコアを記録する
-            initScore = score;
-            initHighScore = highScore;
+            GameData.instance.initScore = GameData.instance.score;
+            GameData.instance.initHighScore = GameData.instance.highScore;
         }
-        isRetry = false;
-        scoreText.text = score.ToString();
-        highScoreText.text = highScore.ToString();
+        GameData.instance.isRetry = false;
+        scoreText.text = GameData.instance.score.ToString();
+        highScoreText.text = GameData.instance.highScore.ToString();
     }
 	
     /// <summary>
@@ -51,11 +45,11 @@ public class Score : MonoBehaviour {
     /// ハイスコアとスコアの初期化処理
     /// </summary>
     public void Initialize(){
-        score = 0;
-        isNewRecord = false;
+        GameData.instance.score = 0;
+        GameData.instance.isNewRecord = false;
         //　ハイスコアを取得する。保存されていなければ20万を取得する
-        highScore = PlayerPrefs.GetFloat(highScoreKey, 0);
-        Debug.Log(highScore);
+        GameData.instance.highScore = PlayerPrefs.GetFloat(highScoreKey, 0);
+        Debug.Log(GameData.instance.highScore);
     }
 
     /// <summary>
@@ -64,27 +58,27 @@ public class Score : MonoBehaviour {
     /// <param name="scorePoint"></param>
     public void AddPoint(float scorePoint){
         scorePoint *= scoreBonus;
-        score += scorePoint;
+        GameData.instance.score += scorePoint;
         StartCoroutine(ScaleChangeScore(scorePoint));
         Debug.Log(scorePoint);
-        if(highScore < score) {
+        if(GameData.instance.highScore < GameData.instance.score) {
             // ハイスコア更新確認。超えていれば数値を更新し、フラグを立てる
-            if(!isNewRecord) {
-                isNewRecord = true;
+            if(!GameData.instance.isNewRecord) {
+                GameData.instance.isNewRecord = true;
             }
-            highScore = score;
+            GameData.instance.highScore = GameData.instance.score;
             StartCoroutine(ScaleChangeHighScore());
-            Debug.Log(highScore);
-            Debug.Log(isNewRecord);
-            if(highScore >= 200000 && !CharaSet.achievements[4]) {
+            Debug.Log(GameData.instance.highScore);
+            Debug.Log(GameData.instance.isNewRecord);
+            if(GameData.instance.highScore >= 200000 && !GameData.instance.achievements[4]) {
                 // witch5追加
-                CharaSet.achievements[4] = true;
+                GameData.instance.achievements[4] = true;
                 CharaSet.SaveAchievement(4);
             }
         }
         //スコア・ハイスコアを表示する
-        scoreText.text = score.ToString();
-        highScoreText.text = highScore.ToString();
+        scoreText.text = GameData.instance.score.ToString();
+        highScoreText.text = GameData.instance.highScore.ToString();
     }
 
     /// <summary>
@@ -113,11 +107,15 @@ public class Score : MonoBehaviour {
     /// <returns></returns>
     private IEnumerator ScaleChangeScore(float scorePoint) {
         float value = Random.Range(0.25f, 0.45f);
-        float scale = GetScale(scorePoint);
-        Debug.Log(scale);
-        iTween.ScaleTo(scoreText.transform.gameObject, iTween.Hash("y", scale, "time", value));
+        //float scale = GetScale(scorePoint);
+        //Debug.Log(scale);
+        Sequence seq = DOTween.Sequence();
+        seq.Append(scoreText.transform.DOScale(GetScale(scorePoint), value));
         yield return new WaitForSeconds(value);
-        iTween.ScaleTo(scoreText.transform.gameObject, iTween.Hash("y", 1.0f, "time", 0.1f));
+        seq.Append(scoreText.transform.DOScale(1.0f, 0.1f));
+        //iTween.ScaleTo(scoreText.transform.gameObject, iTween.Hash("y", scale, "time", value));
+        //yield return new WaitForSeconds(value);
+        //iTween.ScaleTo(scoreText.transform.gameObject, iTween.Hash("y", 1.0f, "time", 0.1f));
     }
 
     /// <summary>
@@ -126,9 +124,13 @@ public class Score : MonoBehaviour {
     /// <returns></returns>
     private IEnumerator ScaleChangeHighScore() {
         float value = Random.Range(0.25f, 0.45f);
-        iTween.ScaleTo(highScoreText.transform.gameObject, iTween.Hash("y", 1.2f, "time", value));
+        Sequence seq = DOTween.Sequence();
+        seq.Append(highScoreText.transform.DOScale(1.2f, value));
         yield return new WaitForSeconds(value);
-        iTween.ScaleTo(highScoreText.transform.gameObject, iTween.Hash("y", 1.0f, "time", 0.1f));
+        seq.Append(highScoreText.transform.DOScale(1.0f, 0.1f));
+        //iTween.ScaleTo(highScoreText.transform.gameObject, iTween.Hash("y", 1.2f, "time", value));
+        //yield return new WaitForSeconds(value);
+        //iTween.ScaleTo(highScoreText.transform.gameObject, iTween.Hash("y", 1.0f, "time", 0.1f));
     }
 
     /// <summary>
@@ -136,8 +138,8 @@ public class Score : MonoBehaviour {
     /// 各ステージクリア時とゲームオーバー時に処理
     /// </summary>
     public void Save(){
-        PlayerPrefs.SetFloat(highScoreKey, highScore);
-        Debug.Log(highScore);
+        PlayerPrefs.SetFloat(highScoreKey, GameData.instance.highScore);
+        Debug.Log(GameData.instance.highScore);
         PlayerPrefs.Save();
         Debug.Log("Save");        
     }

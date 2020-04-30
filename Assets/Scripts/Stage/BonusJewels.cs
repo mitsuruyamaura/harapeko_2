@@ -13,7 +13,7 @@ public class BonusJewels : MonoBehaviour {
     /// エクセレントクリアによるボーナス宝石生成の有無の判定
     /// </summary>
     public void CheckExcellentBonus() {
-        if(StageManager.stage < 7 && StageManager.excelentCount > 0) {
+        if(GameData.instance.stage < 7 && GameData.instance.excelentCount > 0) {
             // ボーナスステージ以外でエクセレントクリアなら
             CreateJewels();
         }
@@ -32,7 +32,7 @@ public class BonusJewels : MonoBehaviour {
         Rigidbody2D rb = jewel.GetComponent<Rigidbody2D>();
         rb.AddForce((Vector2.up + (Vector2.right * randomDirection)) * randomPower);
         // エクセレント回数だけ宝石を出す
-        if(bonusCount < StageManager.excelentCount) {         
+        if(bonusCount < GameData.instance.excelentCount) {         
             StartCoroutine(ExcelentBonus());
         }
         Debug.Log(bonusCount);

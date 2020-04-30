@@ -40,14 +40,14 @@ public class DebugSwitch : MonoBehaviour {
         isKeyFlg = isKeyboardFlg;
         if (isDebugSwitch) {
             // スイッチがオンならステージ数とエクセレント回数とクリア回数と難易度を代入
-            StageManager.stage = debugStageNum;
-            StageManager.excelentCount = debugExcellentCount;
-            StageManager.gameClearCount = debugClearCount;
-            StageManager.difficulty = debugDifficulty;
+            GameData.instance.stage = debugStageNum;
+            GameData.instance.excelentCount = debugExcellentCount;
+            GameData.instance.gameClearCount = debugClearCount;
+            GameData.instance.difficulty = debugDifficulty;
         }
         Debug.Log(isTitleReturnFlg);
         Debug.Log(isKeyFlg);
-        Debug.Log(StageManager.stage);
+        Debug.Log(GameData.instance.stage);
         Debug.Log(debugExcellentCount);
     }
 
@@ -55,9 +55,9 @@ public class DebugSwitch : MonoBehaviour {
     /// 使用できるキャラの追加
     /// </summary>
     public void CharaDebugSetup() {
-        CharaSet.achievements[1] = charaFlg[0];
-        CharaSet.achievements[2] = charaFlg[1];
-        CharaSet.achievements[3] = charaFlg[2];
-        CharaSet.achievements[4] = charaFlg[3];
+        GameData.instance.achievements[1] = charaFlg[0];
+        GameData.instance.achievements[2] = charaFlg[1];
+        GameData.instance.achievements[3] = charaFlg[2];
+        GameData.instance.achievements[4] = charaFlg[3];
     }
 }
