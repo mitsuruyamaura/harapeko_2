@@ -77,7 +77,7 @@ public class Life : MonoBehaviour {
         if (gameState == GameState.IN_PROGRESS){
             // ゲーム進行中のみRectTransformのサイズを取得し、マイナスする
             rt.sizeDelta -= new Vector2(ap, 0);
-            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<BgmManager>().DamageLifeSE();
+            SoundManager.instance.PlaySE(SoundManager.SE_TYPE.DAMEGE);
         }
     }
 
@@ -89,7 +89,7 @@ public class Life : MonoBehaviour {
         if(gameState != GameState.GAME_OVER) {
             // ゲームオーバーでないなら、RectTrrancformのサイズを取得し、プラスする
             rt.sizeDelta += new Vector2(hp, 0);
-            GameObject.FindGameObjectWithTag("SoundManager").GetComponent<BgmManager>().RecoverLifeSE();
+            SoundManager.instance.PlaySE(SoundManager.SE_TYPE.RECOVER);
             // 最大値を超えたら最大値で上書きする
             if(rt.sizeDelta.x > 767f) {
                 rt.sizeDelta = new Vector2(767f, 42f);
@@ -106,7 +106,8 @@ public class Life : MonoBehaviour {
         loss = 0.0f;
         // ゲームオーバーリザルト表示し、ゲームオーバーBGMを鳴らす
         GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<ResultDisplayManager>().DisplayGameOverText();
-        GameObject.FindGameObjectWithTag("SoundManager").GetComponent<BgmManager>().StopBgm();
+        SoundManager.instance.StopBGM();
+        SoundManager.instance.PlaySE(SoundManager.SE_TYPE.GAME_OVER);
         // ローカルにハイスコアを保存
         //GameObject.FindGameObjectWithTag("ScoreManager").GetComponent<Score>().Save();
         // StageManagerスクリプトよりリセット処理とハイスコア判定処理を呼び出す

@@ -77,8 +77,9 @@ public class GameClearController : MonoBehaviour {
     private void ClearStage() {
         //ライフの減少をストップ。クリアの状態を更新する。(エクセレント回数の更新)
         GameObject.FindGameObjectWithTag("HP").GetComponent<Life>().Clear(); ;        
-        // BGMを止める
-        GameObject.Find("SoundManager").GetComponent<BgmManager>().GameClear();
+        // BGMを止めてクリアSEを流す
+        SoundManager.instance.StopBGM();
+        SoundManager.instance.PlaySE(SoundManager.SE_TYPE.STAGE_CLAER);
         // スコアアタックモードでないなら次のステージへ遷移させる処理を呼ぶ
         GameObject.Find("ScoreManager").GetComponent<StageManager>().NextStage(1);
         for (int i = 0; i < fireworks.Length; i++) {

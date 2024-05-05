@@ -53,10 +53,10 @@ public class WitchMove : MonoBehaviour {
     ParticleSystem particle;
     Life life;
 
-    AudioSource sound1;                 //SE1-5
-    AudioSource sound2;
-    AudioSource sound3;
-    AudioSource sound4;
+    AudioSource sound1;                 //SE1-5 Jump
+    AudioSource sound2;                 // normal_attack
+    AudioSource sound3;                 // charge_attack
+    AudioSource sound4;                 // charger
     AudioSource sound5;                 //  パワーアップ中のジングル
 
     int soundPlay = 0;                  //  BGM管理用

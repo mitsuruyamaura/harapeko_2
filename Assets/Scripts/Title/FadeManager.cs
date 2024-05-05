@@ -15,7 +15,7 @@ public class FadeManager : MonoBehaviour {
     [Header("初期キャラ表示制御用")]
     public CharaSet charaSet;
     [Header("タイトル画面制御用")]
-    public TitleImageController titleImageController;
+    public Title title;
     
     private bool isCharaSet;
 
@@ -48,7 +48,7 @@ public class FadeManager : MonoBehaviour {
             }
             canvas.enabled = true;
             AdMobBanner.instance.bannerView.Show();
-            titleImageController.DisplayTitleMode();
+            title.DisplayTitleMode();
         });
     }
 
@@ -57,8 +57,8 @@ public class FadeManager : MonoBehaviour {
     /// </summary>
     private IEnumerator HiddenTitleImage(float wait) {
         yield return new WaitForSeconds(wait);
-        titleImageController.titleImage[0].enabled = false;
-        titleImageController.titleImage[1].enabled = false;
+        title.titleImage[0].enabled = false;
+        title.titleImage[1].enabled = false;
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class FadeManager : MonoBehaviour {
             // バナー広告を非表示にする
             AdMobBanner.instance.bannerView.Hide();
             fade.FadeOut(0.7f);
-            titleImageController.DisplayChangeImage();
+            title.DisplayChangeImage();
         });
     }
 

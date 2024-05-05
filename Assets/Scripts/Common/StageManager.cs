@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class StageManager : MonoBehaviour {
 
-    [SerializeField, Header("ハイスコアポップアップ表示")]
+    [Header("ハイスコアポップアップ表示")]
     public GameObject highScorePopup;
 
     private string CLEAR_COUNT = "clearCount";
