@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 public class WitchMove : MonoBehaviour {
 
@@ -149,7 +148,7 @@ public class WitchMove : MonoBehaviour {
                 UndoState();
             }
             //  ジャンプ連打で空中歩行。落下時はホバリング可能。
-            if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")) {
+            if (Input.GetButtonDown("Jump")) {
                 //  AddForceにて上方向へ力を加える
                 rb.AddForce(new Vector2(1, 1) * jumpPower / 2);
             }
@@ -167,7 +166,7 @@ public class WitchMove : MonoBehaviour {
             bottomLayer);
 
             //  落下していなくてBottom以外の足場でスルー（矢印の下かSキーのいずれか）が押されている間にジャンプが押されたら
-            if (CrossPlatformInputManager.GetButtonDown("Through") || Input.GetButtonDown("Through")) {
+            if (Input.GetButtonDown("Through")) {
                 if (isGrounded) {
                     //  着地判定をさせず、ジャンプをさせない
                     isGrounded = false;
@@ -178,7 +177,7 @@ public class WitchMove : MonoBehaviour {
                 }
             }
             //  ジャンプ（スペースキーか矢印の上）を押したら
-            if (CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetButtonDown("Jump")) {
+            if (Input.GetButtonDown("Jump")) {
                 //  BottomかGroundに着地していたとき
                 if (isGrounded || isBottomed) {//&& isJumping == false ){
                                                //  着地判定をfalse
@@ -211,22 +210,22 @@ public class WitchMove : MonoBehaviour {
                 UndoState();
             }
             //  Power状態での攻撃。すべてチャージショット。なので常にparticle点滅。
-            if (CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
+            if (Input.GetButtonUp("Action")) {
                 //　チャージ攻撃でオブジェクト貫通弾
                 StartCoroutine(CreateBullet(powerfulStar, 1.0f));
             }
         } else {  //  witchStateがPowerful状態でないなら（通常かFly状態）
-            if (CrossPlatformInputManager.GetButton("Action") || Input.GetButton("Action")) {
+            if (Input.GetButton("Action")) {
                 //  チャージ攻撃カウント用
                 chargeCount += Time.deltaTime;
             }
-            if (CrossPlatformInputManager.GetButtonDown("Action") || Input.GetButtonDown("Action")) {
+            if (Input.GetButtonDown("Action")) {
                 //   チャージ状態を示すParticleとSEを鳴らす
                 particle.Play();
                 sound4.PlayOneShot(sound4.clip);
             }
             //　キーを離した時のカウントの内容で分岐
-            if (CrossPlatformInputManager.GetButtonUp("Action") || Input.GetButtonUp("Action")) {
+            if (Input.GetButtonUp("Action")) {
                 if (chargeCount < 1.5f) {
                     //  チャージのカウントが足りない場合、通常攻撃
                     StartCoroutine(CreateBullet(candyBullet, 0.4f));
@@ -251,7 +250,7 @@ public class WitchMove : MonoBehaviour {
                 chargeCount = 0;
             }
             //  パーティクルが再生中＋キーが上がったらパーティクルの再生を止める
-            if (particle.isPlaying && CrossPlatformInputManager.GetButtonUp("Action") || particle.isPlaying && Input.GetButtonUp("Action")) {
+            if (particle.isPlaying && Input.GetButtonUp("Action")) {
                 particle.Stop();
             }
         }
@@ -329,7 +328,7 @@ public class WitchMove : MonoBehaviour {
             // x = PCとモバイル用のキー設定
             float x = 0;
             if(!DebugSwitch.isKeyFlg) {
-                x = CrossPlatformInputManager.GetAxisRaw("Horizontal");
+                //x = CrossPlatformInputManager.GetAxisRaw("Horizontal");
             } else {
                 // PC用
                 x = Input.GetAxisRaw("Horizontal");
