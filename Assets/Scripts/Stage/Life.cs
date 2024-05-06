@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityStandardAssets.CrossPlatformInput;
 using System.Collections;
 
 public class Life : MonoBehaviour {
@@ -54,7 +53,7 @@ public class Life : MonoBehaviour {
         // ゲームオーバー状態でハイスコアの更新がないなら画面タップでタイトルに戻す
         if(gameState == GameState.GAME_OVER && !GameData.instance.isNewRecord) {
             //  ActionボタンかJumpボタンを押すと
-            if(CrossPlatformInputManager.GetButtonDown("Action") || CrossPlatformInputManager.GetButtonDown("Jump") || Input.GetKeyDown("space")) {
+            if(Input.GetKeyDown(KeyCode.Space)) {
                 //SceneManager.LoadScene("Title");
             }
         }

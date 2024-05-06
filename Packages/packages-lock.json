@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "fbe0bf85155f42f8832205f7b3ac3df571ada33e"
     },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6baeccf6c544c155497164327cca72f28163a578"
+    },
     "com.singularitygroup.hotreload": {
       "version": "git+https://gitlab.hotreload.net/root/hot-reload-releases.git#1.12.9",
       "depth": 0,
@@ -101,22 +108,9 @@
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
-      "depth": 2,
+      "depth": 3,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.purchasing": {
-      "version": "4.11.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.androidjni": "1.0.0",
-        "com.unity.services.core": "1.8.2"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.services.analytics": {
@@ -132,7 +126,7 @@
     },
     "com.unity.services.core": {
       "version": "1.12.5",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.unitywebrequest": "1.0.0",
@@ -153,7 +147,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.6",
+      "version": "3.0.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {
