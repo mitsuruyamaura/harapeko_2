@@ -47,7 +47,7 @@ public class FadeManager : MonoBehaviour {
                 isCharaSet = true;
             }
             canvas.enabled = true;
-            AdMobBanner.instance.bannerView.Show();
+            //AdMobBanner.instance.bannerView.Show();
             title.DisplayTitleMode();
         });
     }
@@ -71,7 +71,7 @@ public class FadeManager : MonoBehaviour {
         fade.FadeIn(0.7f, () =>
         {
             // バナー広告を非表示にする
-            AdMobBanner.instance.bannerView.Hide();
+            //AdMobBanner.instance.bannerView.Hide();
             fade.FadeOut(0.7f);
             title.DisplayChangeImage();
         });
@@ -83,7 +83,7 @@ public class FadeManager : MonoBehaviour {
     /// <param name="time"></param>
     public void TransitionStage(float time) {
         // バナー広告を破壊する
-        AdMobBanner.instance.bannerView.Destroy();
+        //AdMobBanner.instance.bannerView.Destroy();
         fade.FadeIn(0.7f, () =>
         {
             fade.FadeOut(time);
