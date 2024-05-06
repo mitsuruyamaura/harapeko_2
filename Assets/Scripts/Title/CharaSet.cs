@@ -108,7 +108,7 @@ public class CharaSet : MonoBehaviour {
     /// </summary>
     public void OnClickStartButton() {
         // バナー広告や各種ボタンを非表示にする
-        AdMobBanner.instance.bannerView.Hide();
+        //AdMobBanner.instance.bannerView.Hide();
         buttonsCanvasGroup.alpha = 0;
         charaSelectPopUp.SetActive(true);
         // 追加キャラの取得とコースクリア状態の再取得
@@ -293,6 +293,6 @@ public class CharaSet : MonoBehaviour {
 
         charaSelectPopUp.SetActive(false);
         buttonsCanvasGroup.alpha = 1.0f;
-        AdMobBanner.instance.bannerView.Show();
+        //AdMobBanner.instance.bannerView.Show();
     }
 }

@@ -38,7 +38,7 @@ public class ScoreBoostPopup : MonoBehaviour {
         isClickable = true;
         if (!GameData.instance.isAdmobDebug) {
             // インステ再生
-            AdMobInterstitial.instance.OnClickStartInterstitial();
+            //AdMobInterstitial.instance.OnClickStartInterstitial();
         } else {
             // 代わりに30秒間のカウントダウンを表示する
             admobTimer = 2.0f;

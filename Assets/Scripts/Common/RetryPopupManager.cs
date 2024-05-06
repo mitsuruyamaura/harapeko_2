@@ -90,7 +90,7 @@ public class RetryPopupManager : MonoBehaviour {
         yield return new WaitForSeconds(0.8f);
         if (!isDebug) {
             // インステ広告を再生する
-            AdMobInterstitial.instance.OnClickStartInterstitial();
+            //AdMobInterstitial.instance.OnClickStartInterstitial();
         } else {
             // 代わりに30秒間のカウントダウンを表示する
             admobTimer = 2.0f;
