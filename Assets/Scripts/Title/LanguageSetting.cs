@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class LanguageSetting : MonoBehaviour {
 
+    public Button btnSetting;
+
     [Header("選択言語ボタンテキスト")]
     public Text selectLanguage;
     [Header("スタートボタンテキスト")]
@@ -21,6 +23,7 @@ public class LanguageSetting : MonoBehaviour {
     private const string LANGUAGE_NUM = "language";
 
     private void Start() {
+        btnSetting.onClick.AddListener(OnClickChangeLanguageSetting);
         // 保存されている言語を取得。デフォルトは日本語
         GameData.instance.language = PlayerPrefs.GetInt(LANGUAGE_NUM, 0);
         DisplaySelectLanguage();
